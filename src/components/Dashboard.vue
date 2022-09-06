@@ -1,11 +1,11 @@
 <template>
     <div class="container">
-      <div class="conteudo">
+      <div class="conteudo" v-show="!editableMode">
         <div v-show="!createdMode" class="box orange" v-for="task in tasks" :key="task.id">
           <h2 class="task-title">{{ task.title }} | {{ task.date }}</h2>
           <p>{{ task.description }}</p>
           <button class="button buttonColor" @click="deleteTask(task.id)">Delete</button>
-          <button class="button buttonColor">Edit</button>
+          <button class="button buttonColor" @click="callEdit(task.id)">Edit</button>
         </div>
         <div v-show="createdMode" class="newTask">
             <h2 class="task-title">New task</h2>
@@ -30,10 +30,42 @@
                     <input type="submit" class="submit-btn" value="Submit Task">
                 </div>
             </form>
+            <div class="input-container">
+                <button class="button" @click="createdMode = false">Back</button>
+            </div>
        </div>
       </div>
+      <div class="conteudo" v-show="editableMode">
+        <h2 class="task-title">Edit task</h2>
+            <form id="task-form" @submit="sendEdit">
+                <div class="input-container">
+                    <label for="taskTitle">Title:</label>
+                    <input type="text" v-model="taskTitle" name="taskTitle" id="taskTitle" placeholder="Digite o título da tarefa">
+                </div>
+                <div class="input-container">
+                    <label for="taskDescription">Description:</label>
+                    <input type="text" v-model="taskDescription" name="taskDescription" id="taskDescription" placeholder="Descrição da tarefa">
+                </div>
+                <div class="input-container">
+                    <label for="taskEmail">Email:</label>
+                    <input type="email" v-model="taskEmail" name="taskEmail" id="taskEmail" placeholder="Digite o seu email">
+                </div>
+                <div class="input-container">
+                    <label for="taskDate">Due to:</label>
+                    <input type="date" v-model="taskDate" name="taskDate" id="taskDate">
+                </div>
+                <div class="input-container">
+                    <input type="submit" class="submit-btn" value="Edit Task">
+                </div>
+            </form>
+            <div class="input-container">
+                <button class="button" @click="exitEditMode">Back</button>
+            </div>
+      </div>
     </div>
-    <button v-show="!createdMode" class="button-create" @click="createdMode = true">+ Create Task +</button>
+    <div v-show="!editableMode">
+        <button v-show="!createdMode" class="button-create" @click="createdMode = true">+ Create Task +</button>
+    </div>
   </template>
   
   <script>
@@ -42,6 +74,8 @@
         data(){
             return{
                 tasks:{},
+                idEdit: null,
+                editTask:{},
                 editableMode: false,
                 createdMode: false,
                 taskTitle: null,
@@ -86,6 +120,64 @@
                 });
 
                 this.getTasks()
+            },
+            async callEdit(id){
+
+                const req = await fetch(`http://localhost:3000/tasks/${id}`);
+
+                const response = await req.json();
+
+                this.editTask = response
+
+                this.taskTitle = this.editTask.title;
+                this.taskDescription = this.editTask.description;
+                this.taskEmail = this.editTask.email;
+                this.taskDate = this.editTask.date;
+
+                this.idEdit = id;
+
+                this.editableMode = true;
+            },
+            async sendEdit(){
+                
+            const data = {
+
+                title: this.taskTitle,
+                description: this.taskDescription,
+                email: this.taskEmail,
+                date: this.taskDate,
+            };
+            
+            const dataJson = JSON.stringify(data);
+
+            const req = await fetch(`http://localhost:3000/tasks/${this.idEdit}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: dataJson,
+            })
+
+            // limpar os campos após envio
+            this.taskTitle = null;
+            this.taskDescription = null;
+            this.taskEmail = null;
+            this.taskDate = null;
+
+
+            this.editableMode = false;
+
+
+            this.getTasks();
+                
+
+            },
+            async exitEditMode(){
+                // limpar os campos após envio
+                this.taskTitle = null;
+                this.taskDescription = null;
+                this.taskEmail = null;
+                this.taskDate = null;
+
+                this.editableMode = false;
             },
     },
     mounted(){
@@ -218,6 +310,20 @@ input{
 .submit-btn:hover{
     background-color: transparent;
     color:#222;
+}
+
+.input-container .button {
+    margin: 0 auto;
+    width: 20%;
+    color: #FCBA03;
+    font-size: 14px;
+    background-color: transparent;
+    border: 1px solid #FCBA03;
+    transition: .5s;
+}
+
+.input-container .button:hover{
+    background-color: #222;
 }
 </style>
   

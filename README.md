@@ -32,3 +32,8 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 ### ADD TASK SCREEN
 ![image](https://user-images.githubusercontent.com/104439152/188690026-c778e57c-4ffe-4121-b225-37a7bf00a2ad.png)
 
+
+
+### EDIT TASK SCREEN
+![image](https://user-images.githubusercontent.com/104439152/188711198-36fe5ef6-f008-40d4-9505-651d55a5e86e.png)
+

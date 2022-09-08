@@ -69,6 +69,10 @@
   </template>
   
   <script>
+    import axios from "axios"
+    axios.defaults.baseURL = "http://localhost:3000"
+
+
     export default{
         name:'Dashboard',
         data(){
@@ -86,25 +90,22 @@
         },
         methods: {
             async getTasks(){
-                const req = await fetch("http://localhost:3000/tasks")
-                const response =  await req.json()
-                this.tasks = response
+                const req = await axios.get("/tasks")
+
+                this.tasks = req.data
             },
+
             async createTask() {
                 
-                const data = {
+                const dataJson = {
                     title: this.taskTitle,
                     description: this.taskDescription,
                     email: this.taskEmail,
                     date: this.taskDate,
                 };
-                const dataJson = JSON.stringify(data);
-                const req = await fetch("http://localhost:3000/tasks", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: dataJson,
-                });
-                const response = await req.json();
+
+                // axios post
+                const req = await axios.post("/tasks", dataJson)
 
                  // limpar os campos após envio
                  this.taskTitle = null;
@@ -113,21 +114,23 @@
                  this.taskDate = null;
 
                  this.createdMode = false;
+
+                 this.getTasks();
+
             },
+
             async deleteTask(id){
-                const req = await fetch(`http://localhost:3000/tasks/${id}`, {
-                    method: "DELETE",
-                });
+
+                const req = await axios.delete(`/tasks/${id}`)
+
 
                 this.getTasks()
             },
             async callEdit(id){
 
-                const req = await fetch(`http://localhost:3000/tasks/${id}`);
+                const req = await axios.get(`/tasks/${id}`)
 
-                const response = await req.json();
-
-                this.editTask = response
+                this.editTask = req.data
 
                 this.taskTitle = this.editTask.title;
                 this.taskDescription = this.editTask.description;
@@ -140,33 +143,27 @@
             },
             async sendEdit(){
                 
-            const data = {
+                const dataJson = {
 
-                title: this.taskTitle,
-                description: this.taskDescription,
-                email: this.taskEmail,
-                date: this.taskDate,
+                    title: this.taskTitle,
+                    description: this.taskDescription,
+                    email: this.taskEmail,
+                    date: this.taskDate,
             };
-            
-            const dataJson = JSON.stringify(data);
 
-            const req = await fetch(`http://localhost:3000/tasks/${this.idEdit}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: dataJson,
-            })
+                const req = await axios.patch(`/tasks/${this.idEdit}`, dataJson)
 
-            // limpar os campos após envio
-            this.taskTitle = null;
-            this.taskDescription = null;
-            this.taskEmail = null;
-            this.taskDate = null;
+                // limpar os campos após envio
+                this.taskTitle = null;
+                this.taskDescription = null;
+                this.taskEmail = null;
+                this.taskDate = null;
 
 
-            this.editableMode = false;
+                this.editableMode = false;
 
 
-            this.getTasks();
+                this.getTasks();
                 
 
             },
@@ -215,56 +212,56 @@
 }
 
 .task-title{
-margin-bottom: 45px;
-font-size: 22px;
-color: hsl(0, 0%, 0%);
-letter-spacing: 2px;
+    margin-bottom: 45px;
+    font-size: 22px;
+    color: hsl(0, 0%, 0%);
+    letter-spacing: 2px;
 }
 
 .button {
-border: none;
-color: white;
-padding: 10px 28px;
-text-align: center;
-text-decoration: none;
-display: inline-block;
-font-size: 13px;
-margin: 4px 2px;
-margin-top: 45px;
-margin-right: 10px;
-transition-duration: 0.4s;
-cursor: pointer;
+    border: none;
+    color: white;
+    padding: 10px 28px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    margin: 4px 2px;
+    margin-top: 45px;
+    margin-right: 10px;
+    transition-duration: 0.4s;
+    cursor: pointer;
 }
 
 .buttonColor {
-background-color: white;
-color: black;
-border: 2px solid #555555;
+    background-color: white;
+    color: black;
+    border: 2px solid #555555;
 }
 
 .buttonColor:hover{
-background-color: #555555;
-color: white;
+    background-color: #555555;
+    color: white;
 }
 
 
 .button-create {
-background-color:hsl(34, 97%, 64%); /* Green */
-border: none;
-color: black;
-padding: 16px 32px;
-text-align: center;
-text-decoration: none;
-display: inline-block;
-font-size: 16px;
-margin: 4px 2px;
-margin-top: 15px;
-margin-bottom: 15px;
-transition-duration: 0.4s;
-cursor: pointer;
-position: fixed;
-bottom: 30px;
-right: 0;
+    background-color:hsl(34, 97%, 64%); /* Green */
+    border: none;
+    color: black;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    position: fixed;
+    bottom: 30px;
+    right: 0;
 }
 
 .button-create:hover{

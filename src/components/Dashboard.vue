@@ -2,7 +2,7 @@
     <div class="container">
       <div class="conteudo" v-show="!editableMode">
         <div v-show="!createdMode" class="box orange" v-for="task in tasks" :key="task.id">
-          <h2 class="task-title">{{ task.title }} | {{ task.date }}</h2>
+          <h2 class="task-title">{{ task.title }} | {{ task.date }} | {{ task.tag }}</h2>
           <p>{{ task.description }}</p>
           <button class="button buttonColor" @click="deleteTask(task.id)">Delete</button>
           <button class="button buttonColor" @click="callEdit(task.id)">Edit</button>
@@ -17,6 +17,13 @@
                 <div class="input-container">
                     <label for="taskDescription">Description:</label>
                     <input type="text" v-model="taskDescription" name="taskDescription" id="taskDescription" placeholder="Descrição da tarefa">
+                </div>
+                <div class="input-container">
+                    <label for="taskProjects">Tag Task:</label>
+                    <select v-model="tagTask" name="taskProjects" id="taskProjects">
+                        <option value="Default">Selecione uma opção</option>
+                        <option v-for="project in projects" :key="project.id" :value="project.title">{{ project.title }}</option>
+                    </select>
                 </div>
                 <div class="input-container">
                     <label for="taskEmail">Email:</label>
@@ -45,6 +52,13 @@
                 <div class="input-container">
                     <label for="taskDescription">Description:</label>
                     <input type="text" v-model="taskDescription" name="taskDescription" id="taskDescription" placeholder="Descrição da tarefa">
+                </div>
+                <div class="input-container">
+                    <label for="taskProjects">Tag Task:</label>
+                    <select v-model="tagTask" name="taskProjects" id="taskProjects">
+                        <option value="Default">Selecione uma opção</option>
+                        <option v-for="project in projects" :key="project.id" :value="project.title">{{ project.title }}</option>
+                    </select>
                 </div>
                 <div class="input-container">
                     <label for="taskEmail">Email:</label>
@@ -85,7 +99,9 @@
                 taskTitle: null,
                 taskDescription: null,
                 taskEmail: null,
-                taskDate: null
+                taskDate: null,
+                tagTask: null,
+                projects:{},
             }
         },
         methods: {
@@ -102,6 +118,7 @@
                     description: this.taskDescription,
                     email: this.taskEmail,
                     date: this.taskDate,
+                    tag: this.tagTask,
                 };
 
                 // axios post
@@ -112,6 +129,7 @@
                  this.taskDescription = null;
                  this.taskEmail = null;
                  this.taskDate = null;
+                 this.tagTask = null;
 
                  this.createdMode = false;
 
@@ -136,6 +154,7 @@
                 this.taskDescription = this.editTask.description;
                 this.taskEmail = this.editTask.email;
                 this.taskDate = this.editTask.date;
+                this.tagTask = this.editTask.tag;
 
                 this.idEdit = id;
 
@@ -149,6 +168,7 @@
                     description: this.taskDescription,
                     email: this.taskEmail,
                     date: this.taskDate,
+                    tag: this.tagTask,
             };
 
                 const req = await axios.patch(`/tasks/${this.idEdit}`, dataJson)
@@ -158,6 +178,7 @@
                 this.taskDescription = null;
                 this.taskEmail = null;
                 this.taskDate = null;
+                this.tagTask = null;
 
 
                 this.editableMode = false;
@@ -173,12 +194,20 @@
                 this.taskDescription = null;
                 this.taskEmail = null;
                 this.taskDate = null;
+                this.tagTask = null;
 
                 this.editableMode = false;
             },
+
+            async getProjects(){
+                const req = await axios.get("/tagTasks")
+
+                this.projects = req.data
+            },
     },
     mounted(){
-            this.getTasks()
+            this.getTasks();
+            this.getProjects();
         },
 }
 </script>
@@ -288,7 +317,7 @@ label{
     text-align: left;
 }
 
-input{
+input, select{
     height: 40px;
     padding: 10px;
 }

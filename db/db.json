@@ -5,21 +5,58 @@
       "description": "qualquer coisa",
       "email": "email@gmail.com",
       "date": "2022-09-06",
-      "id": 6
+      "id": 6,
+      "tag": "Estudos"
     },
     {
       "title": "Created terminado",
       "description": "uuhhul terminei tudo por######",
       "email": "email@emailcom",
       "date": "2022-09-06",
-      "id": 9
+      "id": 9,
+      "tag": "Meta pessoal"
     },
     {
       "title": "Verificar TODOS para cruds",
       "description": "aprimorar cruds",
       "email": "fazOL@gmail.com",
       "date": "2022-09-07",
-      "id": 10
+      "id": 10,
+      "tag": "Financeiro"
+    },
+    {
+      "title": "Gamer Moment",
+      "description": "uuhhul",
+      "email": "lancelor@email.com",
+      "date": "2022-09-15",
+      "id": 11,
+      "tag": "Academia"
+    },
+    {
+      "title": "Testando select box",
+      "description": "puxar mais dados api",
+      "email": "estudo@email.com",
+      "date": "2022-09-13",
+      "tag": "Estudos",
+      "id": 12
+    }
+  ],
+  "tagTasks": [
+    {
+      "id": 1,
+      "title": "Estudos"
+    },
+    {
+      "id": 2,
+      "title": "Financeiro"
+    },
+    {
+      "id": 3,
+      "title": "Academia"
+    },
+    {
+      "id": 4,
+      "title": "Meta pessoal"
     }
   ]
 }
